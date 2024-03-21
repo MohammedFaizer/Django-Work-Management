@@ -1,0 +1,154 @@
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #f2f2f2;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    font-family: 'Segoe Script', sans-serif;
+    font-size: 32px;
+    color: #333;
+    margin-top: 0;
+}
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+ input[type="text"],
+input[type="number"],
+
+select{
+  
+    width: 130%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+
+} 
+.acontainer{
+    display: flex;
+       column-gap: 80px;
+}
+.task-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    
+}
+.task-label {
+    margin-left: 10px;
+    font-size: 16px;
+    font-size: 20px;
+}
+.checkbox-custom
+{
+width: 20px;
+height: 20px;
+padding-bottom: 10px;
+font-size: 20px;
+}
+
+textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Specific Styles */
+.top-nav {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 20px;
+    border-radius: 0px 0px 20px 20px;
+}
+.company-name {
+    font-size: 24px;
+    font-family: cursive;
+    font-weight: bold;
+    color: #fff;
+    margin-right: 20px;
+    text-decoration: none;
+}
+.logout-button {
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.logout-button:hover {
+    background-color: #c0392b;
+}
+.question {
+    font-size: 30px;
+    font-weight: bolder;
+    color: #333;
+    margin-bottom: 20px;
+}
+.todo-form {
+    margin-top: 20px;
+}
+.add-more button {
+    background-color: #28a745;
+}
+.remarks textarea {
+    height: 100px;
+}
+.save-button button {
+    background-color: #007bff;
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      text-align: center;
+    }
+    .astronaut {
+      width: 250px;
+      height: 250px;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 3em;
+      color: #333;
+    }
+    p {
+      font-size: 1.2em;
+      color: #555;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    @media only screen and (max-width: 600px) {
+      .astronaut {
+        width: 150px;
+        height: 150px;
+      }
+      h1 {
+        font-size: 2em;
+      }
+      p {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="astronaut" src="https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif" alt="Lost Astronaut">
+    <h1>404 - Page Not Found</h1>
+    <p>Hello Dev . The page you're looking for seems to be lost in space.</p>
+    <a href="{%url 'loginPage'%}"> home</a>
+  </div>
+</body>
+</html>

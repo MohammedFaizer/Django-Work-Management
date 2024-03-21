@@ -1,0 +1,209 @@
+
+{% extends "header/dashboard.html" %}
+
+{% block content %}
+
+{%for task in assign %}
+{% if task.number_of_tasks == 0 %}
+    <!-- Question -->
+    <div class="question">What you are going to work today?</div>
+    
+    <!-- To-Do List Form -->
+    <form class="todo-form" action="#" method="post" onsubmit="submitForm(event)">
+        <div id="task-list" class="container">
+            <input type="hidden" name="addtask-form" value="true">
+            <!-- Existing tasks will be added here -->
+            {% for task in assign %}
+            {% for i in task.task_array %}
+        <div class="task-container">
+                <input type="checkbox" class="checkbox-custom" name="task" value="{{ task.date }}">
+                <span class="task-label">{{ i.TaskName }} - Time taken: {{ i.TimeTaken }} hours, Type: {{ i.Type }}</span>
+            </div>
+                {% endfor %}
+        {% endfor %}
+        </div>
+        <div class="acontainer">
+        <div>
+            <!-- <label for="work-name">Task Name:</label> -->
+            <input type="text" id="work-name" name="work-name" placeholder="Task Name"  >
+        </div>
+        <div>
+            <!-- <label for="hours">How many hours:</label> -->
+            <input type="number" id="hours" name="hours" placeholder="Time in Hr" >
+        </div>
+        <div>
+            <!-- <label for="work-type">Type of Task:</label> -->
+            <select id="work-type" name="work-type"  >
+                <option value="bug">Bug</option>
+                <option value="dev">Development</option>
+            </select>
+        </div>
+    </div>
+      
+            <div class="add-more">
+                <button type="button" id="add-more">Add +</button>
+               
+            </div>
+        
+         <!-- <div class="remarks">
+            <label for="remarks">Remarks:</label>
+            <textarea id="remarks" name="remarks"></textarea>
+        </div> -->
+
+        <center>
+            <div class="save-button">
+                <button type="submit" >Save</button>
+            </div>
+        </center> 
+
+        
+    </form>
+
+
+{% else %}
+    
+    <form class="todo-form" action="#" method="post" onsubmit="saveForm(event)">
+        <div id="task-list" class="container">
+           
+            <!-- Existing tasks will be added here -->
+            {% for task in assign %}
+            {% for i in task.task_array %}
+        <div class="task-container">
+                <input type="checkbox" class="checkbox-custom" name="task" value="{{ task.date }}">
+                <span class="task-label">{{ i.TaskName }} - Time taken: {{ i.TimeTaken }} hours, Type: {{ i.Type }}</span>
+            </div>
+                {% endfor %}
+        {% endfor %}
+        </div> 
+
+        <div class="remarks">
+            <label for="remarks">Remarks:</label>
+            <textarea id="remarks" name="remarks"></textarea>
+        </div>
+
+        <center>
+            <div class="save-button">
+                <button type="submit" >Save</button>
+            </div>
+        </center>
+
+        
+    </form>
+{% endif %}
+{% endfor %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    
+    let tasks = [];
+    document.getElementById('add-more').addEventListener('click', function() {
+    let taskName = document.getElementById('work-name').value;
+    let hours = document.getElementById('hours').value;
+    let workType = document.getElementById('work-type').value;
+    if (taskName && hours && workType) {
+        let taskList = document.getElementById('task-list');
+        let newTask = document.createElement('div');
+        newTask.className = 'task-container';
+        newTask.innerHTML = `
+            <input type="checkbox" class="checkbox-custom" name="task" value="${taskName}">
+            <span class="task-label">${taskName} - Time taken: ${hours} hours, Type: ${workType}</span>
+        `;
+        taskList.appendChild(newTask);
+        tasks.push({
+            "TaskName": taskName,
+            "TimeTaken": hours,
+            "Type": workType
+        });
+        
+        document.getElementById('work-name').value = '';
+        document.getElementById('hours').value = '';
+        document.getElementById('work-type').value = 'bug';
+    } else {
+        alert('Please fill in all fields.');
+    }
+});
+
+
+function saveForm(event)
+{
+    let tasksObject = {};
+    event.preventDefault(); 
+    let remarks = document.getElementById('remarks').value;
+    let checkboxes = document.querySelectorAll('.checkbox-custom');
+    let checkedCount = 0;
+    checkboxes.forEach(function(checkbox) {
+        if (checkbox.checked) {
+            checkedCount++;
+        }
+    });
+    tasksObject['Remarks'] = remarks;
+    tasksObject['form_type']='remarks_form';
+    tasksObject['completed']=checkedCount;
+    $.ajax({
+            type: 'POST',
+            url: '/dashboard/', // URL of your Django endpoint
+            data: {
+                tasksObject: JSON.stringify(tasksObject),
+                csrfmiddlewaretoken: '{{ csrf_token }}' // Ensure to include CSRF token
+            },
+            success: function(response) {
+                // Handle success response if needed
+                alert('Tasks saved successfully!');
+                document.getElementById('remarks').value = '';
+                
+                // Optionally, you can redirect the user or perform other actions
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                // Handle error if needed
+                alert('Error saving tasks: ' + errorThrown);
+               
+            }
+        });
+
+
+}
+
+
+function submitForm(event) {
+    event.preventDefault(); 
+
+   // let remarks = document.getElementById('remarks').value; 
+    if (tasks.length === 0) {
+        alert('Please add at least one task before submiting.');
+        return; 
+    }
+  
+    var todayDate = new Date().toISOString().slice(0, 10); 
+    let tasksObject = {};
+    tasksObject['Date']=todayDate
+    tasksObject['Tasks'] = tasks;
+    tasksObject['form_type']='task_form';
+    //tasksObject['Remarks'] = remarks;
+    // AJAX request to send data to Django
+    $.ajax({
+            type: 'POST',
+            url: '/dashboard/', // URL of your Django endpoint
+            data: {
+                tasksObject: JSON.stringify(tasksObject),
+                csrfmiddlewaretoken: '{{ csrf_token }}' // Ensure to include CSRF token
+            },
+            success: function(response) {
+                // Handle success response if needed
+                alert('Tasks added successfully!');
+              //  document.getElementById('remarks').value = '';
+                
+                // Optionally, you can redirect the user or perform other actions
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                // Handle error if needed
+                
+                alert('Error saving tasks: ' + errorThrown);
+            }
+        });
+
+
+}
+
+</script>
+
+{% endblock %}

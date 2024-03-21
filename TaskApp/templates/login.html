@@ -1,0 +1,32 @@
+{% extends "header/index.html" %}
+
+{% block content %}
+
+
+
+<div class="login-container">
+
+    
+    <div class="login-form">
+        <br></br>
+        <h2>Login</h2>
+
+        <form  method="post" >
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="login" >
+          <input type="email" name="mail" placeholder="Email" autoComplete="off" required>
+          <input type="password" name="password" placeholder="Password" autoComplete="off" required>
+          <input type="submit" value="Login">
+        </form>
+        <a href="{% url 'registerPage' %}" class="signup-link">Don't have an account? Register</a>
+        {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+      </div>
+
+{% endblock %}
+

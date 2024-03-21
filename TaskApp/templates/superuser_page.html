@@ -1,0 +1,62 @@
+
+{% extends "header/dashboard.html" %}
+
+{% block content %}
+<center>
+<div class="">
+    {% if a %}
+    <form method="post"action="">
+        {% csrf_token %}
+        <div class="question">Is it a working Day ?</div>
+
+        <input type="hidden" name="assign_form" value="true">
+        <button type="submit" onclick="return confirmAction()">Yes</button>
+    </form>
+    {% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="date_form" value="true">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Developer Task Tracker</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Dev Email Address</th>
+                <th>Number of Tasks</th>
+                <th>Completed Tasks</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for developer in developers %}
+            <tr>
+                <td>{{ developer.date }}</td>
+                <td>{{ developer.user.username }}</td>
+                <td>{{ developer.number_of_tasks }}</td>
+                <td>{{ developer.no_of_complete }}</td>
+                <td>{{ developer.remarks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</center>
+
+<script>
+    function confirmAction() {
+        if (confirm("Are you sure you want to proceed?")) {
+            // Code to execute if user confirms
+            alert("Action confirmed!");
+            return true; // Allow form submission
+        } else {
+            // Code to execute if user cancels
+            alert("Action cancelled.");
+            return false; // Prevent form submission
+        }
+    }
+    </script>
+{% endblock %}

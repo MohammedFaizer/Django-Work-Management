@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+ 
+</head>
+<body>
+    <div class="top-nav">
+        <!-- Company Name -->
+        <a class="company-name" href="#">Cyces</a>
+        <!-- Logout Button -->
+        <p id="dateLabel"></p>
+
+        <a class="logout-button" href="{% url 'logout' %}">Logout</a>
+    </div>
+    <div class="container">
+    {% block content %}
+
+    {% endblock %}
+    
+</div>
+</body>
+<script>
+    var currentDate = new Date();
+
+// Options for formatting the date
+var options = {
+  timeZone: 'Asia/Kolkata', // Indian Standard Time
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit'
+};
+
+// Format the date in IST
+var istDate = currentDate.toLocaleDateString('en-IN', options);
+document.getElementById("dateLabel").textContent = istDate;
+</script>
+</html>

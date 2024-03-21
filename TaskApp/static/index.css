@@ -1,0 +1,125 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('https://source.unsplash.com/1920x1080/?Black') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+  }
+
+
+  .login-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    height: 390px;
+    padding-left: 50px;
+    padding-right: 50px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+    position: relative;
+    z-index: 1;
+    perspective: 1000px; /* Add perspective for 3D effect */
+    
+     /* Add padding here */
+}
+
+
+  .login-form,
+  .signup-form {
+    position: absolute;
+    width: 80%;
+    backface-visibility: hidden;
+    transition: transform 0.8s;
+  }
+
+  .signup-form {
+    transform: rotateX(180deg); /* Initially hide the signup form */
+  }
+
+  .login-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type='email'],
+  .login-container input[type='tel'],
+  .login-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .login-container input[type="text"]:focus,
+  .login-container input[type="email"]:focus,
+  .login-container input[type="tel"]:focus,
+  .login-container input[type="password"]:focus {
+    border-color: #4CAF50;
+  }
+
+  .login-container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #549756;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .login-container input[type="submit"]:hover {
+    background-color: #25c92d;
+  }
+
+  .login-container .signup-link {
+    margin-top: 15px;
+    color: #333;
+    text-decoration: none;
+    display: inline-block;
+    transition: color 0.3s ease;
+  }
+
+  .login-container .signup-link:hover {
+    color: #4CAF50;
+  }
+
+  .background-text {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 7em;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    z-index: 0;
+    pointer-events: none;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    background-color: #191919cb;
+    padding-right: 15px;
+    padding-left: 10px;
+    border-radius: 80px;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
