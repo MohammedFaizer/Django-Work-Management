@@ -10,9 +10,9 @@
 </head>
 <body>
     <div class="top-nav">
-        <!-- Company Name -->
+        
         <a class="company-name" href="#">Cyces</a>
-        <!-- Logout Button -->
+        
         <p id="dateLabel"></p>
 
         <a class="logout-button" href="{% url 'logout' %}">Logout</a>
@@ -25,7 +25,7 @@
 </div>
 </body>
 <script>
-    var currentDate = new Date();
+ var currentDate = new Date();
 
 // Options for formatting the date
 var options = {
@@ -35,8 +35,8 @@ var options = {
   day: '2-digit'
 };
 
-// Format the date in IST
-var istDate = currentDate.toLocaleDateString('en-IN', options);
+
+var istDate = currentDate.toLocaleDateString('en-IN', options).replace(/\//g, '-');
 document.getElementById("dateLabel").textContent = istDate;
 </script>
 </html>

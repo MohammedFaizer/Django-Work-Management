@@ -4,122 +4,78 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login,logout
-from django.http import JsonResponse
 from .models import TaskTable
 import json
 import datetime
 
 @login_required
 def dashboard(request):
-
-
     if request.user.is_superuser:
-        # Render template for superuser
         today = datetime.date.today()
-        
-        a=True
-        
         if request.method == 'POST':
-            if 'assign_form' in request.POST:
-                regular_users = User.objects.filter(is_superuser=False)
+            if 'date_form' in request.POST:
+                selected_date = request.POST.get('date') 
+                normal_users = User.objects.filter(is_superuser=False) 
+                developers = []
+                for user in normal_users:
+                    tasks_for_selected_date = user.task_set.filter(date=selected_date)
+                    number_of_tasks = tasks_for_selected_date.first().number_of_tasks if tasks_for_selected_date else '---'  # Set to '-' if no tasks for the selected date
+                    remarks = tasks_for_selected_date.first().remarks if tasks_for_selected_date else '---'  # Set to '-' if no tasks for the selected date
+                    no_of_complete=tasks_for_selected_date.first().no_of_complete if tasks_for_selected_date else '---'
+                    developers.append({
+                    'date': selected_date,
+                    'user': user,
+                    'number_of_tasks': number_of_tasks,
+                    'no_of_complete': no_of_complete,
+                    'remarks': remarks,
+                    })
                 
-                for user in regular_users:
-                    task_data = TaskTable.objects.create(user=user, date=today, task_array=[], number_of_tasks=0, remarks='',no_of_complete=0)
-                    task_data.save() 
-                a=False
-                return render(request, 'superuser_page.html',{'developers':{},'a':a})
-            elif 'date_form' in request.POST:
-                selected_date = request.POST.get('date')  
-                ta = TaskTable.objects.filter(date=today)
-                if ta.exists():
-                    a=False
-                print(selected_date)
-                tasks = TaskTable.objects.filter(date=selected_date)
-
-                for task in tasks:
-                   print("Developers are printed in table", task)
-                
-                return render(request, 'superuser_page.html',{'developers':tasks,'a':a})
+                return render(request, 'superuser_page.html',{'developers':developers})
         else:
-            # here the date filter should be passed
-            return render(request, 'superuser_page.html',{'developers':{},'a':a})
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
+            return render(request, 'superuser_page.html',{'developers':{}})
 
     else:
+        def condRender():
+            context={'added':0}
+            today = datetime.date.today()
+            tast = TaskTable.objects.filter(date=today,user=request.user)
+            if tast.exists():
+                context['assign']=tast
+                context['added']=1
+                for task in tast:
+                    if task.no_of_complete==task.number_of_tasks:
+                        context['added']=2
+                
+            return context
         
-
-        today = datetime.date.today()
-        tast = TaskTable.objects.filter(date=today,user=request.user)
         if request.method=='POST':
             data = json.loads(request.POST['tasksObject'])
+            today = datetime.date.today()
             if data['form_type']=='task_form':
                 tasks=data['Tasks']
-                #date=data['Date']
-                #remarks=data['Remarks']
-                tat = TaskTable.objects.filter(date=today,user=request.user)
-                obj = tat.get()
-                if obj and obj.number_of_tasks == 0:
-                    task_data = TaskTable.objects.get(user=request.user,date=today)
-                    task_data.task_array = tasks
-                    task_data.number_of_tasks = len(tasks)
-                    #task_data.remarks = remarks
-                    task_data.save()
-
-                return render(request, 'user_page.html',{'assign':tat})
-            
-
+                tk = TaskTable.objects.create(user=request.user, date=today, task_array=tasks, number_of_tasks=len(tasks), remarks='',no_of_complete=0)
+                tk.save() 
+                
+                return render(request, 'user_page.html',condRender())
             elif data['form_type']=='remarks_form':
-                #tasks=data['Tasks']
-                #date=data['Date']
-                print('VAndichu')
                 remarks=data['Remarks']
+                check_data=data['check']
                 number_of_completed=data['completed']
-                print(remarks)
                 tat = TaskTable.objects.filter(date=today,user=request.user)
                 obj = tat.get()
                 if obj and obj.number_of_tasks != 0:
                     task_data = TaskTable.objects.get(user=request.user,date=today)
-                    #task_data.task_array = tasks
-                    #task_data.number_of_tasks = len(tasks)
                     task_data.no_of_complete=number_of_completed
                     task_data.remarks = remarks
+                    for t, c in zip(task_data.task_array, check_data):
+                        t['isChecked'] = c['isc']
                     task_data.save()
 
-                return render(request, 'user_page.html',{'assign':tat})
+                return render(request, 'user_page.html',condRender())
            
         
-        return render(request, 'user_page.html',{'assign':tast})
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
+        return render(request, 'user_page.html',condRender())
+ 
 
 def loginPage(request):
     if request.method=='POST':
@@ -150,7 +106,7 @@ def registerPage(request):
         if password == conf_password:
             if email.endswith('@cyces.co'):
                 if User.objects.filter(email=email).exists():
-                    messages.warning(request, 'Email already exists. Please use a different email.')
+                    messages.warning(request, 'Email already exists.')
                     return redirect('registerPage')  
                 else:
                     myuser = User.objects.create_user(email, email, password)
