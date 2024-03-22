@@ -53,8 +53,18 @@ def dashboard(request):
             today = datetime.date.today()
             if data['form_type']=='task_form':
                 tasks=data['Tasks']
-                tk = TaskTable.objects.create(user=request.user, date=today, task_array=tasks, number_of_tasks=len(tasks), remarks='',no_of_complete=0)
-                tk.save() 
+                tast = TaskTable.objects.filter(date=today,user=request.user)
+                
+                if tast.exists():
+                    obj=tast.get()
+                    if obj and obj.number_of_tasks != 0:
+                        task_data = TaskTable.objects.get(user=request.user,date=today)
+                        task_data.number_of_tasks+=len(tasks)
+                        task_data.task_array.extend(tasks) 
+                        task_data.save()
+                else:
+                    tk = TaskTable.objects.create(user=request.user, date=today, task_array=tasks, number_of_tasks=len(tasks), remarks='',no_of_complete=0)
+                    tk.save() 
                 
                 return render(request, 'user_page.html',condRender())
             elif data['form_type']=='remarks_form':

@@ -3,7 +3,6 @@
 
 {% block content %}
 
-{% if added == 0 %}
     <!-- Question -->
     <div class="question">What you are going to work today?</div>  
     <!-- To-Do List Form -->
@@ -38,21 +37,25 @@
 
         <center>
             <div class="save-button">
-                <button type="submit" >Save</button>
+                <button type="submit" >assign</button>
             </div>
         </center> 
 
         
     </form>
 
- {% elif added == 1 %} 
+
     
     <form class="todo-form" action="#" method="post" onsubmit="saveForm(event)">
         {% csrf_token %}
         <div id="task-list" class="container">
            
             <!-- Existing tasks will be added here -->
-            <p>{{ assign.0.no_of_complete }}/{{ assign.0.number_of_tasks }}</p>
+            {% if assign.0 %}
+    <p>{{ assign.0.no_of_complete }}/{{ assign.0.number_of_tasks }}</p>
+{% else %}
+    <p>No Task Added</p>
+{% endif %}
 
       {% for task in assign %}
     {% for i in task.task_array %}
@@ -79,9 +82,7 @@
         
     </form>
 
-{% else %}
-<h1>Done For Today</h1>
-{% endif %}
+
 
 
 
