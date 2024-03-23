@@ -8,10 +8,11 @@
     <!-- To-Do List Form -->
     <form class="todo-form" action="#" method="post" onsubmit="submitForm(event)">
         {% csrf_token %}
-        <div id="task-list" class="container">
+        <!-- <div id="task-list" class="container"> -->
             <input type="hidden" name="addtask-form" value="true">
             
-        </div>
+        <!-- </div> -->
+
         <div class="acontainer">
         <div>
             <!-- <label for="work-name">Task Name:</label> -->
@@ -30,10 +31,10 @@
         </div>
     </div>
       
-            <div class="add-more">
+            <!-- <div class="add-more">
                 <button type="button" id="add-more">INSERT</button>
                
-            </div>
+            </div> -->
 
         <center>
             <div class="save-button">
@@ -74,7 +75,7 @@
         </div>
 
         <center>
-            <div class="save-button">
+            <div class="add-more">
                 <button type="submit" >Save</button>
             </div>
         </center>
@@ -91,38 +92,20 @@
 
 <script>
     
+function submitForm(event) {
+    event.preventDefault(); 
     let tasks = [];
-    document.getElementById('add-more').addEventListener('click', function() {
     let taskName = document.getElementById('work-name').value;
     let hours = document.getElementById('hours').value;
     let workType = document.getElementById('work-type').value;
     if (taskName && hours && workType) {
-        let taskList = document.getElementById('task-list');
-        let newTask = document.createElement('div');
-        newTask.className = 'task-container';
-        newTask.innerHTML = `
-            <input type="checkbox" class="checkbox-custom" name="task" value="${taskName}">
-            <span class="task-label">${taskName} - Time taken: ${hours} hours, Type: ${workType}</span>
-        `;
-        taskList.appendChild(newTask);
         tasks.push({
             "TaskName": taskName,
             "TimeTaken": hours,
             "Type": workType,
             "isChecked":false,
         });
-        
-        document.getElementById('work-name').value = '';
-        document.getElementById('hours').value = '';
-        document.getElementById('work-type').value = 'bug';
-    } else {
-        alert('Please fill in all fields.');
-    }
-});
-
-function submitForm(event) {
-    event.preventDefault(); 
-    if (tasks.length === 0) {
+        if (tasks.length === 0) {
         alert('Please add at least one task before submiting.');
         return; 
     }
@@ -139,14 +122,19 @@ function submitForm(event) {
             },
             success: function(response) {
                 alert('Tasks added successfully!');
+                
                 location.reload();
             },
             error: function(xhr, textStatus, errorThrown) {
                 alert('Error saving tasks: ' + errorThrown);
             }
         });
+        
 
-
+    } else {
+        alert('Please fill in all fields.');
+        return;
+    }
 }
 function saveForm(event)
 {

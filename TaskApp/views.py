@@ -20,7 +20,8 @@ def dashboard(request):
                 for user in normal_users:
                     tasks_for_selected_date = user.task_set.filter(date=selected_date)
                     number_of_tasks = tasks_for_selected_date.first().number_of_tasks if tasks_for_selected_date else '---'  # Set to '-' if no tasks for the selected date
-                    remarks = tasks_for_selected_date.first().remarks if tasks_for_selected_date else '---'  # Set to '-' if no tasks for the selected date
+                    remarks = tasks_for_selected_date.first().remarks if tasks_for_selected_date else '---'
+                    task_array = tasks_for_selected_date.first().task_array if tasks_for_selected_date else []  # Set to '-' if no tasks for the selected date
                     no_of_complete=tasks_for_selected_date.first().no_of_complete if tasks_for_selected_date else '---'
                     developers.append({
                     'date': selected_date,
@@ -28,6 +29,7 @@ def dashboard(request):
                     'number_of_tasks': number_of_tasks,
                     'no_of_complete': no_of_complete,
                     'remarks': remarks,
+                    'tky':task_array,
                     })
                 
                 return render(request, 'superuser_page.html',{'developers':developers})
@@ -36,16 +38,11 @@ def dashboard(request):
 
     else:
         def condRender():
-            context={'added':0}
+            context={}
             today = datetime.date.today()
             tast = TaskTable.objects.filter(date=today,user=request.user)
             if tast.exists():
                 context['assign']=tast
-                context['added']=1
-                for task in tast:
-                    if task.no_of_complete==task.number_of_tasks:
-                        context['added']=2
-                
             return context
         
         if request.method=='POST':
@@ -91,7 +88,6 @@ def loginPage(request):
     if request.method=='POST':
         email=request.POST.get('mail')
         password=request.POST.get('password')
-        print(email,password)
         user=authenticate(request,username=email,password=password)
         if user is not None:
             login(request,user)

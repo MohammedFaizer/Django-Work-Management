@@ -110,14 +110,45 @@ button:hover {
     background-color: #333;
     color: #fff;
     display: flex;
+    position: fixed;
     justify-content: space-between;
+    top: 0;
+    left: 0;
+    width: 100%;
     align-items: center;
     padding: 10px 20px;
     height: 20px;
-    border-radius: 0px 0px 20px 20px;
+    border-radius: 0px 0px 20px 30px;
 }
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.613); /* semi-transparent black */
+    z-index: 1000; /* ensure it's on top */
+  }
+  
+  .detail-box {
+    background-color: #fff; /* white background for detail box */
+    width: 70%;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .close-btn {
+    display: block;
+    margin-top: 10px;
+  }
 .company-name {
-    font-size: 24px;
+    font-size: 25px;
     font-family: cursive;
     font-weight: bold;
     color: #fff;
@@ -128,6 +159,7 @@ button:hover {
     padding: 5px 10px;
     background-color: #dc3545;
     color: #fff;
+    margin-right: 30px;
     border-radius: 5px;
     text-decoration: none;
 }
