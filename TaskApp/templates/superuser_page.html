@@ -3,24 +3,16 @@
 
 {% block content %}
 <center>
-<div class="">
-    {% if a %}
-    <form method="post"action="">
-        {% csrf_token %}
-        <div class="question">Is it a working Day ?</div>
-
-        <input type="hidden" name="assign_form" value="true">
-        <button type="submit" onclick="return confirmAction()">Yes</button>
-    </form>
-    {% endif %}
+<div class=""> 
     <form action="" method="post">
+        
         {% csrf_token %}
         <input type="hidden" name="date_form" value="true">
         <label for="date">Select Date:</label>
         <input type="date" id="date" name="date" required>
         <button type="submit">Submit</button>
     </form>
-    <h2>Developer Task Tracker</h2>
+    <h3>Developer Task Tracker</h3>
     <table>
         <thead>
             <tr>
@@ -29,6 +21,7 @@
                 <th>Number of Tasks</th>
                 <th>Completed Tasks</th>
                 <th>Remarks</th>
+                <th>Task Details</th>
             </tr>
         </thead>
         <tbody>
@@ -39,24 +32,61 @@
                 <td>{{ developer.number_of_tasks }}</td>
                 <td>{{ developer.no_of_complete }}</td>
                 <td>{{ developer.remarks }}</td>
+                <td><button class="view-btn" data-developer-id="{{ developer.user.id }}">View Details</button></td>
+                <div class="overlay" id="overlay-{{ developer.user.id }}">
+                    <div class="detail-box">
+                        <h1>Task Details</h1>
+                        <h3>Date: {{ developer.date }} </h3>
+                        <h3>Dev Email :{{ developer.user.username }}</h3>
+                        <p>{{ developer.no_of_complete }}/{{ developer.number_of_tasks }}</p>
+                        <!-- Add more detailed data -->
+                        <ul>
+                            {% for i in developer.tky %}
+                            <div class="task-container">
+                                <!-- Set the value attribute to the date of the task -->
+                                <input type="checkbox" class="checkbox-custom" name="task" value="{{ i.date }}" {% if i.isChecked %} checked {% endif %}>
+                                <span class="task-label">{{ i.TaskName }} - Time taken: {{ i.TimeTaken }} hours, Type: {{ i.Type }}</span>
+                            </div>
+                            {% endfor %}
+                        </ul>
+                        <button class="close-btn" data-developer-id="{{ developer.user.id }}">Close</button>
+                    </div>
+                </div>
+                
+            
             </tr>
-            {% endfor %}
+            
         </tbody>
+        {% endfor %}
     </table>
+  
+
+ 
+
 </div>
 </center>
 
-<script>
-    function confirmAction() {
-        if (confirm("Are you sure you want to proceed?")) {
-            // Code to execute if user confirms
-            alert("Action confirmed!");
-            return true; // Allow form submission
-        } else {
-            // Code to execute if user cancels
-            alert("Action cancelled.");
-            return false; // Prevent form submission
-        }
-    }
-    </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewButtons = document.querySelectorAll('.view-btn');
+        const closeButtons = document.querySelectorAll('.close-btn');
+
+        viewButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const developerId = btn.getAttribute('data-developer-id');
+                const overlay = document.getElementById('overlay-' + developerId);
+                overlay.style.display = 'block';
+            });
+        });
+
+        closeButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const developerId = btn.getAttribute('data-developer-id');
+                const overlay = document.getElementById('overlay-' + developerId);
+                overlay.style.display = 'none';
+            });
+        });
+    });
+  </script>
 {% endblock %}
+
