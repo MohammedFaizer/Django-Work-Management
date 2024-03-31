@@ -2,6 +2,9 @@
 {% extends "header/dashboard.html" %}
 
 {% block content %}
+
+<a href="{% url 'devmanagement' %}" ><button>Dev Management</button></a>
+<br></br>
 <center>
 <div class=""> 
     <form action="" method="post">
@@ -12,7 +15,8 @@
         <input type="date" id="date" name="date" required>
         <button type="submit">Submit</button>
     </form>
-    <h3>Developer Task Tracker</h3>
+    {% if developers %}
+    <h2>Developer Task Tracker</h2>
     <table>
         <thead>
             <tr>
@@ -31,38 +35,67 @@
                 <td>{{ developer.user.username }}</td>
                 <td>{{ developer.number_of_tasks }}</td>
                 <td>{{ developer.no_of_complete }}</td>
-                <td>{{ developer.remarks }}</td>
-                <td><button class="view-btn" data-developer-id="{{ developer.user.id }}">View Details</button></td>
-                <div class="overlay" id="overlay-{{ developer.user.id }}">
-                    <div class="detail-box">
-                        <h1>Task Details</h1>
-                        <h3>Date: {{ developer.date }} </h3>
-                        <h3>Dev Email :{{ developer.user.username }}</h3>
-                        <p>{{ developer.no_of_complete }}/{{ developer.number_of_tasks }}</p>
-                        <!-- Add more detailed data -->
+                <td>
+                    {% if developer.remarks %}
+                        {{ developer.remarks.first.remarks }}
+                    {% else %}
+                        No remarks
+                    {% endif %}
+                </td>
+
+
+                <!-- <td>
+                    {% if developer.task_array %}
                         <ul>
-                            {% for i in developer.tky %}
-                            <div class="task-container">
-                                <!-- Set the value attribute to the date of the task -->
-                                <input type="checkbox" class="checkbox-custom" name="task" value="{{ i.date }}" {% if i.isChecked %} checked {% endif %}>
-                                <span class="task-label">{{ i.TaskName }} - Time taken: {{ i.TimeTaken }} hours, Type: {{ i.Type }}</span>
-                            </div>
+                            {% for task in developer.task_array %}
+                                <li>{{ task.taskName }} - Time: {{ task.taskTime }} Type: {{ task.taskType }}</li>
                             {% endfor %}
                         </ul>
+                    {% else %}
+                        No tasks
+                    {% endif %}
+                </td> -->
+                
+                <td><button class="view-btn" data-developer-id="{{ developer.user.id }}">View Details</button></td>
+                <div class="overlay" id="overlay-{{ developer.user.id }}">
+                    
+                    <div class="detail-box">
+                        {% if developer.task_array %}
+                        <h1>Task Details</h1>
+                        <h3>Date: {{ developer.date }} </h3>
+                        <h3>Dev Email :{{ developer.user }}</h3>
+                        <p>{{ developer.no_of_complete }}/{{ developer.number_of_tasks }}</p>
+                        <!-- Add more detailed data -->
+                        {% for i in developer.task_array %} 
+                        <ul>
+                              
+                            <div class="task-container">
+                              
+                                <input type="checkbox" class="checkbox-custom" name="task" value="{{ i.date }}" {% if i.is_checked %} checked {% endif %}>
+                                <!-- <span class="task-label"> </span> -->
+                                <div>
+                                    {{ i.taskName }} - Time taken: {{ i.taskTime }} hours, Type: {{ i.taskType }}
+                                Created at :{{i.created_at}}  Competed at :{{i.completed_at}}
+                                </div>
+                            </div>
+                           
+                        </ul>
+                        {% endfor %}
+                        {% else %}
+                       No Task is Added in Given Date
+                    {% endif %}
                         <button class="close-btn" data-developer-id="{{ developer.user.id }}">Close</button>
                     </div>
+                    
                 </div>
                 
-            
             </tr>
-            
+            {% endfor %}
         </tbody>
-        {% endfor %}
     </table>
-  
-
- 
-
+    {% else %}
+        <p>No data available.Please select a date </p>
+    {% endif %}
 </div>
 </center>
 
@@ -88,5 +121,8 @@
         });
     });
   </script>
-{% endblock %}
 
+
+
+
+    {% endblock %}

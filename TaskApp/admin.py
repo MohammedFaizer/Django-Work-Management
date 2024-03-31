@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import TaskTable
+from .models import TaskTable,RemarksTable
 
-# Register your models here.
+
 admin.site.register(TaskTable)
-# Register your models here.
+admin.site.register(RemarksTable)
+

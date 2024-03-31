@@ -2,47 +2,29 @@
 {% extends "header/dashboard.html" %}
 
 {% block content %}
-
-    <!-- Question -->
     <div class="question">What you are going to work today?</div>  
-    <!-- To-Do List Form -->
     <form class="todo-form" action="#" method="post" onsubmit="submitForm(event)">
         {% csrf_token %}
-        <!-- <div id="task-list" class="container"> -->
             <input type="hidden" name="addtask-form" value="true">
-            
-        <!-- </div> -->
-
         <div class="acontainer">
         <div>
-            <!-- <label for="work-name">Task Name:</label> -->
             <input type="text" id="work-name" name="work-name" placeholder="Task Name"  >
         </div>
         <div>
-            <!-- <label for="hours">How many hours:</label> -->
             <input type="number" id="hours" name="hours" placeholder="Time in Hr" >
         </div>
         <div>
-            <!-- <label for="work-type">Type of Task:</label> -->
             <select id="work-type" name="work-type"  >
                 <option value="bug">Bug</option>
                 <option value="dev">Development</option>
             </select>
         </div>
     </div>
-      
-            <!-- <div class="add-more">
-                <button type="button" id="add-more">INSERT</button>
-               
-            </div> -->
-
         <center>
             <div class="save-button">
                 <button type="submit" >ADD</button>
             </div>
         </center> 
-
-        
     </form>
 
 
@@ -50,23 +32,20 @@
     <form class="todo-form" action="#" method="post" onsubmit="saveForm(event)">
         {% csrf_token %}
         <div id="task-list" class="container">
-           
-            <!-- Existing tasks will be added here -->
-            {% if assign.0 %}
-    <p>{{ assign.0.no_of_complete }}/{{ assign.0.number_of_tasks }}</p>
-{% else %}
-    <p>No Task Added</p>
-{% endif %}
-
-      {% for task in assign %}
-    {% for i in task.task_array %}
-        <div class="task-container">
-            <!-- Set the value attribute to the date of the task -->
-            <input type="checkbox" class="checkbox-custom" name="task" value="{{ i.date }}" {% if i.isChecked %} checked {% endif %}>
-            <span class="task-label">{{ i.TaskName }} - Time taken: {{ i.TimeTaken }} hours, Type: {{ i.Type }}</span>
-        </div>
+{% if assign %}
+<p>{{completed_tasks}}/{{total_tasks}}<p>
+<h2>Today's Tasks:</h2>
+<ul>
+    {% for i in assign %}
+    <div class="task-container">
+        <input type="checkbox" class="checkbox-custom" name="task" value="{{ i.date }}" {% if i.is_checked %} checked {% endif %}>
+        <span class="task-label">{{ i.taskName }} -> Time taken: {{ i.taskTime }} hours | Type: {{ i.taskType }} |Created at:{{ i.created_at|time:"g:i A" }}</span>
+    </div>
     {% endfor %}
-{% endfor %}
+</ul>
+{% else %}
+<p>No tasks Added</p>
+{% endif %}
         </div> 
 
         <div class="remarks">
@@ -94,24 +73,22 @@
     
 function submitForm(event) {
     event.preventDefault(); 
-    let tasks = [];
+
+    let tasksObject = {};
+    tasksObject['form_type']='task_form';
     let taskName = document.getElementById('work-name').value;
     let hours = document.getElementById('hours').value;
     let workType = document.getElementById('work-type').value;
     if (taskName && hours && workType) {
-        tasks.push({
-            "TaskName": taskName,
-            "TimeTaken": hours,
-            "Type": workType,
-            "isChecked":false,
-        });
-        if (tasks.length === 0) {
-        alert('Please add at least one task before submiting.');
+    tasksObject['taskName']=taskName;
+    tasksObject['taskTime']=hours;
+    tasksObject['taskType']=workType;
+    tasksObject['isChecked']=false;
+    }
+    else{
+        alert('Please add all the task details before Submitting ');
         return; 
     }
-    let tasksObject = {};
-    tasksObject['Tasks'] = tasks;
-    tasksObject['form_type']='task_form';
 
     $.ajax({
             type: 'POST',
@@ -130,30 +107,26 @@ function submitForm(event) {
             }
         });
         
-
-    } else {
-        alert('Please fill in all fields.');
-        return;
-    }
 }
 function saveForm(event)
 {
-    //final form check box
     let tasksObject = {};
     event.preventDefault(); 
     let remarks = document.getElementById('remarks').value;
     let checkboxes = document.querySelectorAll('.checkbox-custom');
-    let checkedCount = 0;
+    if (remarks.trim() === '' || checkboxes.length === 0) {
+    alert('Please provide remarks Or Add Task');
+    return;
+    }
+
     let ischeck=[];
     checkboxes.forEach(function(checkbox) {
         if (checkbox.checked) {ischeck.push({'isc':true,});
-            checkedCount++;
         }
         else{ischeck.push({'isc':false,});
         }});
     tasksObject['Remarks'] = remarks;
     tasksObject['form_type']='remarks_form';
-    tasksObject['completed']=checkedCount;
     tasksObject['check']=ischeck;
     $.ajax({
             type: 'POST',
@@ -163,11 +136,9 @@ function saveForm(event)
                 csrfmiddlewaretoken: '{{ csrf_token }}' // Ensure to include CSRF token
             },
             success: function(response) {
-                // Handle success response if needed
                 alert('Tasks saved successfully!');
                 document.getElementById('remarks').value = '';
                 location.reload();
-                // Optionally, you can redirect the user or perform other actions
             },
             error: function(xhr, textStatus, errorThrown) {
                 // Handle error if needed

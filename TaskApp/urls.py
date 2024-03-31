@@ -7,5 +7,6 @@ urlpatterns = [
    path('register/', views.registerPage, name='registerPage'),  # Fixed typo here
    path('dashboard/', views.dashboard, name='dashboard'),
    path("logout/", views.logoutPage, name="logout"),
+    path("devmanagement/", views.devmanage, name="devmanagement"),
 
 ]

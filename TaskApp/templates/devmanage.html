@@ -1,0 +1,57 @@
+{% extends "header/dashboard.html" %}
+
+{% block content %}
+<center>
+<h1>Developer Management</h1>
+</center>
+<a href="{% url 'dashboard'%}" ><button>Back</button></a>
+    
+    <div>
+        <h3>Add User</h3>
+        <form class="todo-form"  method="post" >
+            <input type="hidden" name="form_type" value="add_form">
+            {% csrf_token %}
+            <div class="acontainer">
+                <div>
+                    <input type="text" id="work-name" name="email" placeholder="Email"  >
+                </div>
+                <div>
+                    <input type="text" id="work-name" name="password" placeholder="Password" >
+                </div>
+            </div>
+                <center>
+                    <div class="add-more">
+                        <button type="submit" >Register</button>
+                    </div>
+                </center> 
+        </form>
+    </div>
+    <div>
+        <h3>Delete User</h3>
+        <form class="todo-form" action="#" method="post" >
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="delete_form">
+            <div class="acontainer">
+                <div>
+                    <input type="text" id="work-name" name="email" placeholder="Email"  >
+                </div>
+            </div>
+        
+                <center>
+                    <div >
+                        <button type="submit" class="delete-button">Delete</button>
+                    </div>
+                </center> 
+        
+        </form>
+    </div>
+    <!-- Display error messages -->
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
